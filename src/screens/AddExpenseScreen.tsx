@@ -55,8 +55,12 @@ const ManualEntryScreen = ({ navigation }: ManualEntryScreenProps) => {
       notes,
     });
 
-    Alert.alert('Success', 'Expense added successfully', [
-      { text: 'OK', onPress: () => navigation.getParent()?.navigate('Home') },
+    Alert.alert('✓ Expense Added', 'Your expense has been recorded', [
+      {
+        text: 'OK',
+        onPress: () => navigation.getParent()?.navigate('Home'),
+        style: 'default'
+      },
     ]);
   };
 
