@@ -21,6 +21,7 @@ const HomeScreen = () => {
     container: {
       flex: 1,
       padding: 10,
+      paddingBottom: 70, // Extra space for navigation bar
       backgroundColor: colors.background,
     },
     header: {
