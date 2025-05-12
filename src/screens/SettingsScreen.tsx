@@ -6,8 +6,7 @@ import { getGlassmorphism, getColors } from '../styles/globalStyles';
 const SettingsScreen = () => {
   const { data, clearAllData, updateBudget } = useExpense();
   const colorScheme = useColorScheme();
-  const systemDarkMode = colorScheme === 'dark';
-  const [isDarkMode, setIsDarkMode] = useState(systemDarkMode);
+  const isDarkMode = colorScheme === 'dark';
   const { colors } = getColors(isDarkMode);
   const glassmorphism = getGlassmorphism(isDarkMode);
   const styles = getStyles(colors);
@@ -40,12 +39,7 @@ const SettingsScreen = () => {
       
       <View style={[glassmorphism.container, styles.settingItem]}>
         <Text style={styles.settingText}>Dark Mode</Text>
-        <Switch
-          value={isDarkMode}
-          onValueChange={() => setIsDarkMode(!isDarkMode)}
-          trackColor={{ false: '#767577', true: colors.accent }}
-          thumbColor={isDarkMode ? colors.text : '#f4f3f4'}
-        />
+        <Text style={styles.settingText}>{isDarkMode ? 'On' : 'Off'}</Text>
       </View>
 
       <View style={[glassmorphism.container, styles.settingItem]}>
