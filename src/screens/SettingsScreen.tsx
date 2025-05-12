@@ -1,11 +1,16 @@
-import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput } from 'react-native';
-import React, { useState, useContext } from 'react';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput, useColorScheme } from 'react-native';
+import React, { useState } from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
-import { glassmorphism, colors } from '../styles/globalStyles';
+import { getGlassmorphism, getColors } from '../styles/globalStyles';
 
 const SettingsScreen = () => {
   const { data, clearAllData, updateBudget } = useExpense();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const colorScheme = useColorScheme();
+  const systemDarkMode = colorScheme === 'dark';
+  const [isDarkMode, setIsDarkMode] = useState(systemDarkMode);
+  const { colors } = getColors(isDarkMode);
+  const glassmorphism = getGlassmorphism(isDarkMode);
+  const styles = getStyles(colors);
   const [budgetInput, setBudgetInput] = useState(data.monthlyBudget.toString());
 
   const handleClearData = () => {
@@ -80,7 +85,13 @@ const SettingsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: {
+  background: string;
+  text: string;
+  secondaryText: string;
+  accent: string;
+  danger: string;
+}) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,

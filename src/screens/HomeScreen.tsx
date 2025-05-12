@@ -3,7 +3,7 @@ import { useColorScheme } from 'react-native';
 import AnimatedView from '../components/AnimatedView';
 import React, { useState } from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
-import { glassmorphism, getColors } from '../styles/globalStyles';
+import { getGlassmorphism, getColors } from '../styles/globalStyles';
 import PieChart from '../components/PieChart';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -185,14 +185,28 @@ const HomeScreen = () => {
     .reduce((sum, exp) => sum + exp.amount, 0);
 
   // Calculate spending by category for pie chart
-  const pieData = data.categories.map(cat => {
+  const totalSpending = data.expenses
+    .filter(exp => new Date(exp.date).getMonth() === currentMonth)
+    .reduce((sum, exp) => sum + exp.amount, 0);
+  
+  const categoryColors = [
+    '#393E46',
+    '#948979',
+    '#DFD0B8',
+    '#222831',
+  ];
+  
+  const pieData = data.categories.map((cat, index) => {
     const amount = data.expenses
       .filter(exp => exp.category === cat)
       .reduce((sum, exp) => sum + exp.amount, 0);
+    const percentage = totalSpending > 0 ? Math.round((amount / totalSpending) * 100) : 0;
     return {
       value: amount,
-      color: colors.accent,
-      label: amount > 0 ? cat : ''
+      color: categoryColors[index % categoryColors.length],
+      label: amount > 0 ? `${cat} (${percentage}%)` : '',
+      category: cat,
+      amount
     };
   }).filter(item => item.value > 0);
 
@@ -210,21 +224,20 @@ const HomeScreen = () => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
-      <AnimatedView style={[glassmorphism.container, styles.header]}>
-        <Text style={[styles.title, { color: colors.accent }]}>Cyros Expense Tracker</Text>
-        <Text style={styles.subtitle}>Your financial overview</Text>
+      <AnimatedView style={[getGlassmorphism(isDarkMode).container, styles.header]}>
+        <Text style={[styles.title, { color: colors.accent }]}>Cyros</Text>
       </AnimatedView>
 
-      <AnimatedView style={[glassmorphism.container, styles.statsContainer]}>
+      <AnimatedView style={[getGlassmorphism(isDarkMode).container, styles.statsContainer]}>
         <Text style={styles.sectionTitle}>Monthly Summary</Text>
         <View style={styles.statRow}>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>${monthlySpending.toFixed(2)}</Text>
+            <Text style={styles.statValue}>Rp{monthlySpending.toLocaleString('id-ID')}</Text>
             <Text style={styles.statLabel}>Spent</Text>
           </View>
           <View style={styles.statItem}>
             <View style={styles.budgetRow}>
-              <Text style={styles.statValue}>${data.monthlyBudget.toFixed(2)}</Text>
+              <Text style={styles.statValue}>Rp{data.monthlyBudget.toLocaleString('id-ID')}</Text>
               <TouchableOpacity
                 style={styles.editButton}
                 onPress={() => setIsEditingBudget(true)}
@@ -238,13 +251,25 @@ const HomeScreen = () => {
       </AnimatedView>
 
       {pieData.length > 0 && (
-        <AnimatedView style={[glassmorphism.container, styles.chartContainer]}>
+        <AnimatedView style={[getGlassmorphism(isDarkMode).container, styles.chartContainer]}>
           <Text style={styles.sectionTitle}>Spending by Category</Text>
-          <PieChart data={pieData} size={width - 60} />
+          <View style={styles.chartRow}>
+            <PieChart data={pieData} size={Math.min(width / 2 - 30, 150)} />
+            <View style={styles.categoryList}>
+              {pieData.map((item, index) => (
+                <View key={index} style={styles.categoryItem}>
+                  <View style={[styles.colorSwatch, { backgroundColor: item.color }]} />
+                  <Text style={styles.categoryText}>
+                    {item.category}: Rp{item.amount.toLocaleString('id-ID')}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
         </AnimatedView>
       )}
 
-      <AnimatedView style={[glassmorphism.container, styles.trendsContainer]}>
+      <AnimatedView style={[getGlassmorphism(isDarkMode).container, styles.trendsContainer]}>
         <Text style={styles.sectionTitle}>Monthly Trends</Text>
         <View style={styles.trendsList}>
           {monthlyTrends.map((trend, index) => (
@@ -261,7 +286,7 @@ const HomeScreen = () => {
                   ]}
                 />
               </View>
-              <Text style={styles.trendAmount}>${trend.amount.toFixed(2)}</Text>
+              <Text style={styles.trendAmount}>Rp{trend.amount.toLocaleString('id-ID')}</Text>
             </View>
           ))}
         </View>

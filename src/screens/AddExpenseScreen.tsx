@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, useColorScheme } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React, { useState } from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
-import { glassmorphism, colors } from '../styles/globalStyles';
+import { getGlassmorphism, getColors } from '../styles/globalStyles';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
@@ -31,6 +31,11 @@ const Tab = createMaterialTopTabNavigator<{
 
 const ManualEntryScreen = ({ navigation }: ManualEntryScreenProps) => {
   const { addExpense, data } = useExpense();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { colors } = getColors(isDarkMode);
+  const glassmorphism = getGlassmorphism(isDarkMode);
+  const styles = getStyles(colors);
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState(data.categories[0]);
   const [date, setDate] = useState(new Date());
@@ -127,6 +132,11 @@ const ManualEntryScreen = ({ navigation }: ManualEntryScreenProps) => {
 };
 
 const CameraUploadScreen = () => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { colors } = getColors(isDarkMode);
+  const glassmorphism = getGlassmorphism(isDarkMode);
+  const styles = getStyles(colors);
   return (
     <View style={[styles.tabContainer, glassmorphism.container]}>
       <Text style={styles.placeholderText}>Camera/Upload UI Placeholder</Text>
@@ -138,6 +148,10 @@ const CameraUploadScreen = () => {
 };
 
 const AddExpenseScreen = () => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { colors } = getColors(isDarkMode);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <Tab.Navigator
@@ -156,7 +170,12 @@ const AddExpenseScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: {
+  background: string;
+  text: string;
+  secondaryText: string;
+  accent: string;
+}) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

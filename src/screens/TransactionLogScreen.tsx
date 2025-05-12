@@ -1,12 +1,17 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, useColorScheme } from 'react-native';
 import React from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
-import { glassmorphism, colors } from '../styles/globalStyles';
+import { getGlassmorphism, getColors } from '../styles/globalStyles';
 import AnimatedView from '../components/AnimatedView';
 import { SlideInRight } from 'react-native-reanimated';
 
 const TransactionLogScreen = () => {
   const { data } = useExpense();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { colors } = getColors(isDarkMode);
+  const glassmorphism = getGlassmorphism(isDarkMode);
+  const styles = getStyles(colors);
 
   return (
     <View style={styles.container}>
@@ -31,7 +36,11 @@ const TransactionLogScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: {
+  background: string;
+  text: string;
+  secondaryText: string;
+}) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,

@@ -1,30 +1,33 @@
 import { StyleSheet } from 'react-native';
 
-export const glassmorphism = StyleSheet.create({
-  container: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    padding: 20,
-    margin: 10,
-    overflow: 'hidden',
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-  },
-  text: {
-    color: 'white',
-    textShadowColor: 'rgba(0, 0, 0, 0.1)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-});
+export const getGlassmorphism = (isDarkMode: boolean) => {
+  const { colors } = getColors(isDarkMode);
+  return StyleSheet.create({
+    container: {
+      backgroundColor: isDarkMode ? 'rgba(57, 62, 70, 0.2)' : 'rgba(223, 208, 184, 0.2)',
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: isDarkMode ? 'rgba(57, 62, 70, 0.3)' : 'rgba(223, 208, 184, 0.3)',
+      shadowColor: colors.text,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 10,
+      padding: 20,
+      margin: 10,
+      overflow: 'hidden',
+    },
+    overlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: isDarkMode ? 'rgba(34, 40, 49, 0.1)' : 'rgba(255, 255, 255, 0.1)',
+    },
+    text: {
+      color: colors.text,
+      textShadowColor: 'rgba(0, 0, 0, 0.1)',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 2,
+    },
+  });
+};
 
 interface ColorPalette {
   primary: string;

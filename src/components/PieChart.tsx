@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import Svg, { G, Circle, Text as SvgText } from 'react-native-svg';
-import { colors } from '../styles/globalStyles';
+import { getColors } from '../styles/globalStyles';
 
 interface PieChartProps {
   data: { value: number; color: string; label: string }[];
@@ -9,6 +9,7 @@ interface PieChartProps {
 }
 
 const PieChart: React.FC<PieChartProps> = ({ data, size = 150 }) => {
+  const { colors } = getColors(true); // Always use dark mode for chart text
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const center = size / 2;
   const radius = center * 0.8;
