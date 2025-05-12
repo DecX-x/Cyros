@@ -49,8 +49,27 @@ export default function App() {
               tabBarActiveTintColor: colors.accent,
               tabBarInactiveTintColor: isDarkMode ? colors.secondaryText : '#6c757d',
               tabBarStyle: {
-                backgroundColor: isDarkMode ? colors.background : '#ffffff',
+                backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                 borderTopWidth: 0,
+                elevation: 0,
+                shadowOpacity: 0,
+                height: 60,
+                paddingBottom: 0,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                marginHorizontal: 10,
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 10,
+              },
+              tabBarItemStyle: {
+                height: 60,
+                paddingVertical: 5,
+              },
+              tabBarLabelStyle: {
+                fontSize: 12,
+                marginBottom: 5,
               },
               headerShown: false,
             })}

@@ -27,12 +27,14 @@ export const glassmorphism = StyleSheet.create({
 });
 
 export const colors = {
-  primary: '#007bff',
-  accent: '#00f5d4',
-  background: '#1a1a2e',
-  text: '#ffffff',
-  secondaryText: '#cccccc',
-  danger: '#dc3545',
+  primary: '#6366f1',
+  accent: '#8b5cf6',
+  background: '#0f172a',
+  text: '#f8fafc',
+  secondaryText: '#94a3b8',
+  danger: '#ef4444',
+  success: '#10b981',
+  warning: '#f59e0b',
 };
 
 export const neon = {

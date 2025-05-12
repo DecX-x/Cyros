@@ -8,10 +8,10 @@ interface PieChartProps {
   size?: number;
 }
 
-const PieChart: React.FC<PieChartProps> = ({ data, size = 200 }) => {
+const PieChart: React.FC<PieChartProps> = ({ data, size = 150 }) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const center = size / 2;
-  const radius = center - 10;
+  const radius = center * 0.8;
   let startAngle = 0;
 
   return (
@@ -46,16 +46,16 @@ const PieChart: React.FC<PieChartProps> = ({ data, size = 200 }) => {
                   r={radius}
                   fill="transparent"
                   stroke={item.color}
-                  strokeWidth={radius / 2}
+                  strokeWidth={radius * 0.4}
                   strokeDasharray={[2 * Math.PI * radius * (item.value / total), 2 * Math.PI * radius]}
                   strokeDashoffset={2 * Math.PI * radius * 0.25}
                   rotation={startAngle - angle / 2}
                 />
                 <SvgText
-                  x={radius * 0.7 * Math.cos((Math.PI * (startAngle - angle / 2)) / 180)}
-                  y={radius * 0.7 * Math.sin((Math.PI * (startAngle - angle / 2)) / 180)}
+                  x={radius * 0.6 * Math.cos((Math.PI * (startAngle - angle / 2)) / 180)}
+                  y={radius * 0.6 * Math.sin((Math.PI * (startAngle - angle / 2)) / 180)}
                   fill={colors.text}
-                  fontSize="12"
+                  fontSize={size * 0.08}
                   textAnchor="middle"
                 >
                   {item.label}

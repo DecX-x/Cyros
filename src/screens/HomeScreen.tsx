@@ -1,14 +1,17 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, Modal, TextInput, TouchableOpacity } from 'react-native';
 import AnimatedView from '../components/AnimatedView';
-import React from 'react';
+import React, { useState } from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
 import { glassmorphism, colors } from '../styles/globalStyles';
 import PieChart from '../components/PieChart';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
-  const { data } = useExpense();
+  const { data, updateBudget } = useExpense();
+  const [isEditingBudget, setIsEditingBudget] = useState(false);
+  const [newBudget, setNewBudget] = useState(data.monthlyBudget.toString());
   
   // Calculate monthly spending
   const currentMonth = new Date().getMonth();
@@ -40,7 +43,8 @@ const HomeScreen = () => {
   }).reverse();
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
       <AnimatedView style={[glassmorphism.container, styles.header]}>
         <Text style={[styles.title, { color: colors.accent }]}>Cyros Expense Tracker</Text>
         <Text style={styles.subtitle}>Your financial overview</Text>
@@ -54,7 +58,15 @@ const HomeScreen = () => {
             <Text style={styles.statLabel}>Spent</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>${data.monthlyBudget.toFixed(2)}</Text>
+            <View style={styles.budgetRow}>
+              <Text style={styles.statValue}>${data.monthlyBudget.toFixed(2)}</Text>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => setIsEditingBudget(true)}
+              >
+                <Ionicons name="pencil" size={16} color={colors.accent} />
+              </TouchableOpacity>
+            </View>
             <Text style={styles.statLabel}>Budget</Text>
           </View>
         </View>
@@ -90,6 +102,45 @@ const HomeScreen = () => {
         </View>
       </AnimatedView>
     </ScrollView>
+
+    <Modal
+      visible={isEditingBudget}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setIsEditingBudget(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <AnimatedView style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Edit Monthly Budget</Text>
+          <TextInput
+            style={styles.input}
+            value={newBudget}
+            onChangeText={setNewBudget}
+            keyboardType="numeric"
+            placeholder="Enter new budget"
+            placeholderTextColor={colors.secondaryText}
+          />
+          <View style={styles.modalButtons}>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.cancelButton]}
+              onPress={() => setIsEditingBudget(false)}
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.saveButton]}
+              onPress={() => {
+                updateBudget(Number(newBudget));
+                setIsEditingBudget(false);
+              }}
+            >
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </AnimatedView>
+      </View>
+      </Modal>
+    </View>
   );
 };
 
@@ -173,6 +224,62 @@ const styles = StyleSheet.create({
     width: 70,
     textAlign: 'right',
     color: colors.text,
+  },
+  budgetRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  editButton: {
+    marginLeft: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: colors.background,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: colors.accent,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    color: colors.text,
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  cancelButton: {
+    backgroundColor: colors.danger,
+  },
+  saveButton: {
+    backgroundColor: colors.success,
+  },
+  buttonText: {
+    color: colors.text,
+    fontWeight: 'bold',
   },
 });
 
