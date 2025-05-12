@@ -9,7 +9,7 @@ import ChatScreen from './src/screens/ChatScreen';
 import AddExpenseScreen from './src/screens/AddExpenseScreen';
 import TransactionLogScreen from './src/screens/TransactionLogScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-import { colors, neon } from './src/styles/globalStyles';
+import { getColors } from './src/styles/globalStyles';
 import { ExpenseProvider } from './src/contexts/ExpenseContext';
 import { useColorScheme } from 'react-native';
 import 'react-native-reanimated';
@@ -21,10 +21,11 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const { colors } = getColors(isDarkMode);
 
   return (
     <ExpenseProvider>
-      <SafeAreaView style={[styles.container, { backgroundColor: isDarkMode ? colors.background : '#f8f9fa' }]} edges={['top']}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
         <StatusBar style={isDarkMode ? 'light' : 'dark'} />
         <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
           <Tab.Navigator
@@ -47,9 +48,9 @@ export default function App() {
                 return <Ionicons name={iconName} size={size} color={color} />;
               },
               tabBarActiveTintColor: colors.accent,
-              tabBarInactiveTintColor: isDarkMode ? colors.secondaryText : '#6c757d',
+              tabBarInactiveTintColor: colors.secondaryText,
               tabBarStyle: {
-                backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                backgroundColor: colors.background,
                 borderTopWidth: 0,
                 elevation: 0,
                 shadowOpacity: 0,

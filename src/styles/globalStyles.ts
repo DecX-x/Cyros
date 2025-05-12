@@ -26,29 +26,43 @@ export const glassmorphism = StyleSheet.create({
   },
 });
 
+interface ColorPalette {
+  primary: string;
+  accent: string;
+  background: string;
+  text: string;
+  secondaryText: string;
+  danger: string;
+  success: string;
+  warning: string;
+}
+
 export const colors = {
-  primary: '#6366f1',
-  accent: '#8b5cf6',
-  background: '#0f172a',
-  text: '#f8fafc',
-  secondaryText: '#94a3b8',
-  danger: '#ef4444',
-  success: '#10b981',
-  warning: '#f59e0b',
+  dark: {
+    primary: '#393E46',
+    accent: '#DFD0B8',
+    background: '#222831',
+    text: '#DFD0B8',
+    secondaryText: '#948979',
+    danger: '#ef4444',
+    success: '#10b981',
+    warning: '#f59e0b',
+  },
+  light: {
+    primary: '#DFD0B8',
+    accent: '#393E46',
+    background: '#FFFFFF',
+    text: '#222831',
+    secondaryText: '#948979',
+    danger: '#ef4444',
+    success: '#10b981',
+    warning: '#f59e0b',
+  }
 };
 
-export const neon = {
-  shadow: {
-    textShadowColor: colors.accent,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-  },
-  border: {
-    borderColor: colors.accent,
-    borderWidth: 1,
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-  },
+export const getColors = (isDarkMode: boolean): { colors: ColorPalette; isDarkMode: boolean } => {
+  return {
+    colors: isDarkMode ? colors.dark : colors.light,
+    isDarkMode
+  };
 };

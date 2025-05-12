@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions, Modal, TextInput, TouchableOpacity } from 'react-native';
+import { useColorScheme } from 'react-native';
 import AnimatedView from '../components/AnimatedView';
 import React, { useState } from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
-import { glassmorphism, colors } from '../styles/globalStyles';
+import { glassmorphism, getColors } from '../styles/globalStyles';
 import PieChart from '../components/PieChart';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -10,8 +11,172 @@ const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const { data, updateBudget } = useExpense();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { colors } = getColors(isDarkMode);
   const [isEditingBudget, setIsEditingBudget] = useState(false);
   const [newBudget, setNewBudget] = useState(data.monthlyBudget.toString());
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 10,
+      backgroundColor: colors.background,
+    },
+    header: {
+      marginBottom: 20,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      marginBottom: 8,
+    },
+    subtitle: {
+      fontSize: 16,
+      color: colors.secondaryText,
+    },
+    statsContainer: {
+      marginBottom: 20,
+    },
+    chartContainer: {
+      marginBottom: 20,
+    },
+    chartRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    categoryList: {
+      flex: 1,
+      paddingLeft: 20,
+    },
+    categoryItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    colorSwatch: {
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      marginRight: 8,
+    },
+    categoryText: {
+      fontSize: 14,
+    },
+    trendsContainer: {
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 15,
+    },
+    statRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    statItem: {
+      alignItems: 'center',
+      flex: 1,
+    },
+    statValue: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 5,
+    },
+    statLabel: {
+      fontSize: 14,
+      color: colors.secondaryText,
+    },
+    trendsList: {
+      width: '100%',
+    },
+    trendItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    trendMonth: {
+      width: 40,
+      color: colors.text,
+    },
+    trendBarContainer: {
+      flex: 1,
+      height: 20,
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderRadius: 10,
+      marginHorizontal: 10,
+      overflow: 'hidden',
+    },
+    trendBar: {
+      height: '100%',
+      borderRadius: 10,
+    },
+    trendAmount: {
+      width: 70,
+      textAlign: 'right',
+      color: colors.text,
+    },
+    budgetRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    editButton: {
+      marginLeft: 8,
+    },
+    modalOverlay: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+      width: '80%',
+      padding: 20,
+      borderRadius: 10,
+      backgroundColor: colors.background,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 20,
+      textAlign: 'center',
+    },
+    input: {
+      height: 40,
+      borderColor: colors.accent,
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      color: colors.text,
+      marginBottom: 20,
+    },
+    modalButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    modalButton: {
+      flex: 1,
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginHorizontal: 5,
+    },
+    cancelButton: {
+      backgroundColor: colors.danger,
+    },
+    saveButton: {
+      backgroundColor: colors.success,
+    },
+    buttonText: {
+      color: colors.text,
+      fontWeight: 'bold',
+    },
+  });
   
   // Calculate monthly spending
   const currentMonth = new Date().getMonth();
@@ -144,143 +309,5 @@ const HomeScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: colors.background,
-  },
-  header: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.secondaryText,
-  },
-  statsContainer: {
-    marginBottom: 20,
-  },
-  chartContainer: {
-    marginBottom: 20,
-    alignItems: 'center'
-  },
-  trendsContainer: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 15,
-  },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  statItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 5,
-  },
-  statLabel: {
-    fontSize: 14,
-    color: colors.secondaryText,
-  },
-  trendsList: {
-    width: '100%',
-  },
-  trendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  trendMonth: {
-    width: 40,
-    color: colors.text,
-  },
-  trendBarContainer: {
-    flex: 1,
-    height: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 10,
-    marginHorizontal: 10,
-    overflow: 'hidden',
-  },
-  trendBar: {
-    height: '100%',
-    borderRadius: 10,
-  },
-  trendAmount: {
-    width: 70,
-    textAlign: 'right',
-    color: colors.text,
-  },
-  budgetRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  editButton: {
-    marginLeft: 8,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    padding: 20,
-    borderRadius: 10,
-    backgroundColor: colors.background,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: colors.accent,
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    color: colors.text,
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalButton: {
-    flex: 1,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginHorizontal: 5,
-  },
-  cancelButton: {
-    backgroundColor: colors.danger,
-  },
-  saveButton: {
-    backgroundColor: colors.success,
-  },
-  buttonText: {
-    color: colors.text,
-    fontWeight: 'bold',
-  },
-});
 
 export default HomeScreen;
