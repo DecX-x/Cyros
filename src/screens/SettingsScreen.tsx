@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput } from 'react-native';
 import React, { useState, useContext } from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
 import { glassmorphism, colors } from '../styles/globalStyles';
 
 const SettingsScreen = () => {
-  const { clearAllData } = useExpense();
+  const { data, clearAllData, updateBudget } = useExpense();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [budgetInput, setBudgetInput] = useState(data.monthlyBudget.toString());
 
   const handleClearData = () => {
     Alert.alert(
@@ -16,6 +17,16 @@ const SettingsScreen = () => {
         { text: 'Delete', style: 'destructive', onPress: clearAllData },
       ]
     );
+  };
+
+  const handleBudgetUpdate = () => {
+    const newBudget = parseFloat(budgetInput);
+    if (!isNaN(newBudget) && newBudget > 0) {
+      updateBudget(newBudget);
+      Alert.alert('Success', 'Monthly budget updated');
+    } else {
+      Alert.alert('Invalid Amount', 'Please enter a valid budget amount');
+    }
   };
 
   return (
@@ -30,6 +41,26 @@ const SettingsScreen = () => {
           trackColor={{ false: '#767577', true: colors.accent }}
           thumbColor={isDarkMode ? colors.text : '#f4f3f4'}
         />
+      </View>
+
+      <View style={[glassmorphism.container, styles.settingItem]}>
+        <Text style={styles.settingText}>Monthly Budget</Text>
+        <View style={styles.budgetContainer}>
+          <TextInput
+            style={styles.budgetInput}
+            value={budgetInput}
+            onChangeText={setBudgetInput}
+            keyboardType="numeric"
+            placeholder="Enter budget"
+            placeholderTextColor={colors.secondaryText}
+          />
+          <TouchableOpacity 
+            style={styles.budgetButton}
+            onPress={handleBudgetUpdate}
+          >
+            <Text style={styles.budgetButtonText}>Update</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <TouchableOpacity 
@@ -71,6 +102,27 @@ const styles = StyleSheet.create({
   settingText: {
     fontSize: 18,
     color: colors.text,
+  },
+  budgetContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  budgetInput: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    padding: 10,
+    color: colors.text,
+    width: 120,
+    marginRight: 10,
+  },
+  budgetButton: {
+    backgroundColor: colors.accent,
+    borderRadius: 8,
+    padding: 10,
+  },
+  budgetButtonText: {
+    color: colors.background,
+    fontWeight: 'bold',
   },
   dangerButton: {
     marginTop: 30,

@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,7 +24,7 @@ export default function App() {
 
   return (
     <ExpenseProvider>
-      <View style={[styles.container, { backgroundColor: isDarkMode ? colors.background : '#f8f9fa' }]}>
+      <SafeAreaView style={[styles.container, { backgroundColor: isDarkMode ? colors.background : '#f8f9fa' }]} edges={['top']}>
         <StatusBar style={isDarkMode ? 'light' : 'dark'} />
         <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
           <Tab.Navigator
@@ -61,7 +62,7 @@ export default function App() {
             <Tab.Screen name="Settings" component={SettingsScreen} />
           </Tab.Navigator>
         </NavigationContainer>
-      </View>
+      </SafeAreaView>
     </ExpenseProvider>
   );
 }
