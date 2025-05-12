@@ -51,12 +51,7 @@ export default function App() {
                 backgroundColor: isDarkMode ? colors.background : '#ffffff',
                 borderTopWidth: 0,
               },
-              headerStyle: {
-                backgroundColor: isDarkMode ? colors.background : '#ffffff',
-              },
-              headerTitleStyle: {
-                color: isDarkMode ? colors.text : '#000000',
-              },
+              headerShown: false,
             })}
           >
             <Tab.Screen name="Home" component={HomeScreen} />

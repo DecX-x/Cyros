@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import AnimatedView from '../components/AnimatedView';
 import React from 'react';
 import { useExpense } from '../contexts/ExpenseContext';
 import { glassmorphism, colors } from '../styles/globalStyles';
+import PieChart from '../components/PieChart';
+
+const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const { data } = useExpense();
@@ -13,14 +16,28 @@ const HomeScreen = () => {
     .filter(exp => new Date(exp.date).getMonth() === currentMonth)
     .reduce((sum, exp) => sum + exp.amount, 0);
 
-  // Calculate spending by category
-  const spendingByCategory = data.categories.map(cat => ({
-    name: cat,
-    amount: data.expenses
+  // Calculate spending by category for pie chart
+  const pieData = data.categories.map(cat => {
+    const amount = data.expenses
       .filter(exp => exp.category === cat)
-      .reduce((sum, exp) => sum + exp.amount, 0)
-  })).filter(cat => cat.amount > 0)
-    .sort((a, b) => b.amount - a.amount);
+      .reduce((sum, exp) => sum + exp.amount, 0);
+    return {
+      value: amount,
+      color: colors.accent,
+      label: amount > 0 ? cat : ''
+    };
+  }).filter(item => item.value > 0);
+
+  // Calculate monthly trend (last 6 months)
+  const monthlyTrends = Array.from({ length: 6 }, (_, i) => {
+    const month = new Date();
+    month.setMonth(currentMonth - i);
+    const monthName = month.toLocaleString('default', { month: 'short' });
+    const total = data.expenses
+      .filter(exp => new Date(exp.date).getMonth() === month.getMonth())
+      .reduce((sum, exp) => sum + exp.amount, 0);
+    return { month: monthName, amount: total };
+  }).reverse();
 
   return (
     <ScrollView style={styles.container}>
@@ -43,14 +60,34 @@ const HomeScreen = () => {
         </View>
       </AnimatedView>
 
-      <AnimatedView style={[glassmorphism.container, styles.categoriesContainer]}>
-        <Text style={styles.sectionTitle}>Top Categories</Text>
-        {spendingByCategory.slice(0, 3).map((cat, index) => (
-          <View key={index} style={styles.categoryItem}>
-            <Text style={styles.categoryName}>{cat.name}</Text>
-            <Text style={styles.categoryAmount}>${cat.amount.toFixed(2)}</Text>
-          </View>
-        ))}
+      {pieData.length > 0 && (
+        <AnimatedView style={[glassmorphism.container, styles.chartContainer]}>
+          <Text style={styles.sectionTitle}>Spending by Category</Text>
+          <PieChart data={pieData} size={width - 60} />
+        </AnimatedView>
+      )}
+
+      <AnimatedView style={[glassmorphism.container, styles.trendsContainer]}>
+        <Text style={styles.sectionTitle}>Monthly Trends</Text>
+        <View style={styles.trendsList}>
+          {monthlyTrends.map((trend, index) => (
+            <View key={index} style={styles.trendItem}>
+              <Text style={styles.trendMonth}>{trend.month}</Text>
+              <View style={styles.trendBarContainer}>
+                <View 
+                  style={[
+                    styles.trendBar,
+                    { 
+                      width: `${(trend.amount / data.monthlyBudget) * 100}%`,
+                      backgroundColor: colors.accent
+                    }
+                  ]}
+                />
+              </View>
+              <Text style={styles.trendAmount}>${trend.amount.toFixed(2)}</Text>
+            </View>
+          ))}
+        </View>
       </AnimatedView>
     </ScrollView>
   );
@@ -77,6 +114,13 @@ const styles = StyleSheet.create({
   statsContainer: {
     marginBottom: 20,
   },
+  chartContainer: {
+    marginBottom: 20,
+    alignItems: 'center'
+  },
+  trendsContainer: {
+    marginBottom: 20,
+  },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
@@ -101,23 +145,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.secondaryText,
   },
-  categoriesContainer: {
-    marginBottom: 20,
+  trendsList: {
+    width: '100%',
   },
-  categoryItem: {
+  trendItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  categoryName: {
-    fontSize: 16,
+  trendMonth: {
+    width: 40,
     color: colors.text,
   },
-  categoryAmount: {
-    fontSize: 16,
-    fontWeight: '600',
+  trendBarContainer: {
+    flex: 1,
+    height: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+    marginHorizontal: 10,
+    overflow: 'hidden',
+  },
+  trendBar: {
+    height: '100%',
+    borderRadius: 10,
+  },
+  trendAmount: {
+    width: 70,
+    textAlign: 'right',
     color: colors.text,
   },
 });
